@@ -204,16 +204,30 @@ You’ll see your Windows peer listed.
 
 ### 9️⃣ CREATE WINDOWS CLIENT CONFIG FILE
 
+Use this command to know your *Router's Public IP*
+```bash
+sudo apt update
+sudo apt install curl -y
+curl ifconfig.me
+```
+
 On Ubuntu, make a file client.conf with:
 ```ini
 [Interface]
 PrivateKey = <win_private_key_here>
+# Your client’s VPN IP (unique per client)
 Address = 10.8.0.2/24
 DNS = 1.1.1.1
 
 [Peer]
+# Server’s public key (from /etc/wireguard/server_public.key on Ubuntu)
 PublicKey = <server_public_key_here>
-Endpoint = <your_server_public_ip>:51820
+Endpoint = <your_server_public_ip>:51820 #use this if you want SSH only to run locally "only when you are on your network
+# Use ONE of these for this if you want to SSH from any network, remove the # for the endpoint you need
+# 1) Router Public IP (from curl)
+#Endpoint = 203.0.113.45:51820
+# 2) Dynamic DNS (DuckDNS or similar)
+# Send only the VPN subnet through the tunnel
 AllowedIPs = 10.8.0.0/24
 PersistentKeepalive = 25
 ```
@@ -222,12 +236,12 @@ Explanation:
 
 - Address assigns the client’s VPN IP (10.8.0.2)
 
-- DNS optional, gives you name resolution
+- DNS is optional, gives you name resolution
 
 - Endpoint = your server’s public IP or domain + port 51820
 
 - AllowedIPs = routes that go through the VPN
-(Here only the private VPN subnet 10.8.0.0/24)
+(Here, only the private VPN subnet 10.8.0.0/24)
 
 - PersistentKeepalive keeps NAT holes open on the client side
 
@@ -236,7 +250,7 @@ Safely copy client.conf to your Windows machine:
 
 - Via USB
 
-- Or scp while SSH still open
+- Or scp while SSH is  still open
 
 
 ### 11 CONNECT WINDOWS TO VPN 🌐
@@ -278,7 +292,7 @@ Explanation:
 
 - Port 22/TCP (SSH) denied publicly
 
-- Port 22 allowed only for VPN subnet
+- Port 22 is allowed only for the VPN subnet
 
 Now SSH is accessible only through the VPN.
 
@@ -314,7 +328,7 @@ sudo systemctl restart ssh
 
 - WireGuard adds very low latency (~10–20 ms).
 
-- Perfect for VNC, RDP, SSH, file transfers.
+- Perfect for VNC, RDP, SSH, and file transfers.
 
 - Much faster and lighter than OpenVPN.
 
