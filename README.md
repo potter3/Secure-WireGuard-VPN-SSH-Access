@@ -316,6 +316,7 @@ sudo systemctl restart ssh
 ```
 
 ✅ Now SSH accepts password logins but only over the VPN.
+try with either the server ip or the vpn ip "10.8.0.1 or .2"
 
 
 
@@ -337,3 +338,4 @@ sudo systemctl restart ssh
 
 
 ---
+
